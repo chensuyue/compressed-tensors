@@ -24,6 +24,12 @@ test:
 	@echo "Running python tests";
 	pytest -ra tests;
 
+# run xpu tests for the repo
+test-xpu: 
+	@echo "Running xpu tests"
+	pytest -c pytest-xpu.ini;
+
+
 # creates wheel file
 build:
 	@echo "Building the wheel for the repository";
