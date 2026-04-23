@@ -6,8 +6,12 @@ from typing import TYPE_CHECKING, Literal
 
 import torch
 import torch.distributed as dist
-from compressed_tensors.distributed import is_distributed, is_source_process
-from compressed_tensors.offload.cache import DiskCache
+from compressed_tensors.distributed import (
+    get_source_rank,
+    is_distributed,
+    is_source_process,
+)
+from compressed_tensors.offload.cache import DiskCache, OffloadCache
 from compressed_tensors.offload.convert.helpers import (
     DEFAULT_OFFLOAD_DEVICE,
     get_tensors,
@@ -42,11 +46,18 @@ def from_accelerate(model: torch.nn.Module) -> tuple["DeviceMap", str | None]:
 
     :param model: accelerate-offloaded model if source process, no constraint otherwise
     """
+    # Early exit if the model has already been converted to compressed-tensors
+    # offloading. This guards against redundant conversion when `from_pretrained`
+    # is patched by multiple wrappers in the same MRO chain (e.g.
+    # `AutoModelForCausalLM` delegating to `Qwen3ForCausalLM`).
+    if _is_offloaded(model):
+        return {}, None
+
     device_map, offload_dir = remove_accelerate(model)
 
     broadcast_obj = [device_map, offload_dir]
     if is_distributed():
-        dist.broadcast_object_list(broadcast_obj, src=0)
+        dist.broadcast_object_list(broadcast_obj, src=get_source_rank())
 
     dispatch_with_map(model, *broadcast_obj)
     return tuple(broadcast_obj)
@@ -233,3 +244,7 @@ def _set_or_validate_offload(current: str | None, new: str) -> str:
     if current not in (None, new):
         raise ValueError("Expected all accelerate tensors to share offload")
     return new
+
+
+def _is_offloaded(model: torch.nn.Module) -> bool:
+    return any(isinstance(m._parameters, OffloadCache) for m in model.modules())
