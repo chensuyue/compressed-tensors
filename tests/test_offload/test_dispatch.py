@@ -95,7 +95,7 @@ def test_dispatch_one_device():
 
 @pytest.mark.unit
 @skip_if_mps_device
-@requires_gpu(2)
+@requires_gpu
 def test_dispatch_two_devices():
     model = Model()
     device_memory = {
@@ -113,7 +113,7 @@ def test_dispatch_two_devices():
 
 @pytest.mark.unit
 @skip_if_mps_device
-@requires_gpu(2)
+@requires_gpu
 def test_dispatch_no_split():
     model = Model()
     device_memory = {
@@ -130,7 +130,7 @@ def test_dispatch_no_split():
 
 @pytest.mark.unit
 @skip_if_mps_device
-@requires_gpu(2)
+@requires_gpu
 def test_dispatch_split():
     model = Model()
     first_linear = model.decoder0.linear0
