@@ -22,8 +22,6 @@ from tests.test_offload.conftest import assert_device_equal, torchrun
 from tests.testing_utils import requires_gpu
 
 
-ACCELERATOR_DEVICE = torch.device(torch.accelerator.current_accelerator().type)
-
 
 # Note that tests only require at least 1 accelerator
 # because different ranks can share the same device.
@@ -31,12 +29,12 @@ ACCELERATOR_DEVICE = torch.device(torch.accelerator.current_accelerator().type)
 
 @pytest.fixture()
 def onload_device():
-    return ACCELERATOR_DEVICE
+    return torch.accelerator.current_accelerator()
 
 
 @pytest.fixture()
 def offload_device():
-    return ACCELERATOR_DEVICE
+    return torch.accelerator.current_accelerator()
 
 
 @pytest.mark.unit

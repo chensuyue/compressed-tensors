@@ -37,6 +37,7 @@ def get_offload_devices() -> list[str]:
 def test_to_accelerate_module(offload_device, tmp_path):
     accelerator_device = torch.accelerator.current_accelerator()
     linear = torch.nn.Linear(5, 5)
+
     if offload_device == "disk":
         offload_dir = tmp_path / "offload_dir"
         os.mkdir(offload_dir)

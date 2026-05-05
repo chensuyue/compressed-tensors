@@ -185,9 +185,9 @@ def _get_safe_open_device(device: "DeviceLikeType") -> str:
     """
     device = torch.device(device)
     if is_accelerator_type(device.type):
-        # safetensors expects plain "mps" instead of an indexed device string.
+        # TODO: check if this case can be applied for all non-index accelerators
         if device.type == "mps":
-            return device.type
+            return f"{device.type}"
 
         if device.index is None:
             index = torch.accelerator.current_device_index()

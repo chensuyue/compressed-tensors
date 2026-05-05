@@ -22,12 +22,10 @@ from tests.test_offload.conftest import torchrun
 from tests.testing_utils import requires_gpu
 
 
-ACCELERATOR_DEVICE = torch.device(torch.accelerator.current_accelerator().type)
-
 
 @pytest.fixture()
 def onload_device():
-    return ACCELERATOR_DEVICE
+    return torch.accelerator.current_accelerator()
 
 
 @pytest.fixture()
