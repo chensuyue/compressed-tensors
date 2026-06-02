@@ -1,0 +1,12 @@
+steps:
+  - label: "Hello world"
+    agents:
+      queue: intel-xpu-b60
+    command: |
+      echo "NUMA_NODE is $$NUMA_NODE"
+      echo "NUMA_CPUSET is $$NUMA_CPUSET"
+      echo "ZE_AFFINITY_MASK is $$ZE_AFFINITY_MASK"
+      echo "NODE_LABEL is $$NODE_LABEL"
+      
+      chmod +x .buildkite/scripts/test-check-xpu.sh
+      .buildkite/scripts/test-check-xpu.sh
