@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "Trigger test scripts..."
 echo "NUMA_NODE is $NUMA_NODE"
 echo "NUMA_CPUSET is $NUMA_CPUSET"
 echo "ZE_AFFINITY_MASK is $ZE_AFFINITY_MASK"
