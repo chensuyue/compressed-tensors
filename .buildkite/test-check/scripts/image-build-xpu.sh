@@ -4,7 +4,7 @@ set -exo pipefail
 DOCKERFILE=.buildkite/docker/Dockerfile.xpu
 CURRENT_HASH=$(md5sum "$DOCKERFILE" | awk '{print $1}')
 NEED_BUILD=false
-if [[ ! $(docker image ls --format '{{.Repository}}:{{.Tag}}' | grep -Fxq "$IMAGE_NAME") ]]; then
+if ! docker image ls --format '{{.Repository}}:{{.Tag}}' | grep -Fxq "$IMAGE_NAME"; then
     NEED_BUILD=true
 else
     EXISTING_HASH=$(docker inspect --format='{{index .Config.Labels "dockerfile.hash"}}' "$IMAGE_NAME" 2>/dev/null || echo "")
